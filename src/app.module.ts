@@ -7,7 +7,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CustomConfigModule } from './config/config.module';
 import { CustomConfigService } from './config/config.service';
-import { UserEntity } from './databasa/entities/user.entity';
 import { UserModule } from './user/user.module';
 
 @Module({
