@@ -2,11 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { CustomConfigService } from './config.service';
+import configuration from './configuration';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [],
+      envFilePath: ['environments/.env'],
+      load: [configuration],
     }),
   ],
   providers: [ConfigService, CustomConfigService],
