@@ -3,8 +3,9 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { CreatedUpdatedModel } from './common/created-updated.model';
 
 @Entity('user')
-export abstract class UserEntity extends CreatedUpdatedModel {
-  @PrimaryGeneratedColumn('uuid') id: string;
+export class UserEntity extends CreatedUpdatedModel {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
     type: 'text',
@@ -41,19 +42,4 @@ export abstract class UserEntity extends CreatedUpdatedModel {
     nullable: false,
   })
   password: string;
-
-  @Column({
-    type: 'text',
-  })
-  account_type: string;
-
-  @Column({
-    type: 'text',
-  })
-  account_status: string;
-
-  @Column({
-    type: 'text',
-  })
-  account_role: string;
 }

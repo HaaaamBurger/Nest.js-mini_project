@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import * as path from 'path';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
 import { CustomConfigModule } from './config/config.module';
 import { CustomConfigService } from './config/config.service';
+import { UserEntity } from './databasa/entities/user.entity';
 import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
     CustomConfigModule,
-    UserModule,
     TypeOrmModule.forRootAsync({
       imports: [CustomConfigModule],
       useFactory: (customConfigService: CustomConfigService) => {
@@ -22,9 +22,7 @@ import { UserModule } from './user/user.module';
           port: customConfigService.port,
           username: customConfigService.username,
           password: customConfigService.password,
-          entities: [
-            path.join(__dirname, '..', 'database', '**', '*.entity{.ts,.js}'),
-          ],
+          entities: [UserEntity],
           database: customConfigService.database,
           synchronize: true,
         };
@@ -32,6 +30,8 @@ import { UserModule } from './user/user.module';
       inject: [CustomConfigService],
     }),
     ConfigModule,
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
