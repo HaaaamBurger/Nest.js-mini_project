@@ -13,6 +13,8 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { UserRequestDto } from './dto/request/user.request.dto';
 import { UserResponseDto } from './dto/response/user.response.dto';
+import { UserCreateResponse } from './dto/user.dto';
+import { UserResponseMapper } from './user.response.mapper';
 import { UserService } from './user.service';
 
 @ApiTags('User')
@@ -30,9 +32,10 @@ export class UserController {
   }
 
   @Get('/:id')
-  async getUserById(@Param('id') id: string): Promise<UserResponseDto> {
+  async getUserById(@Param('id') id: string): Promise<UserCreateResponse> {
     try {
-      return await this.userService.user_by_id(id);
+      const user = await this.userService.user_by_id(id);
+      return UserResponseMapper.toDetailsDto(user);
     } catch (e) {
       throw new HttpException(e.message, e.error);
     }

@@ -1,7 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
+import { UserEntity } from '../databasa/entities/user.entity';
 import { UserRequestDto } from './dto/request/user.request.dto';
 import { UserResponseDto } from './dto/response/user.response.dto';
+import { UserCreateResponse } from './dto/user.dto';
 import { UserRepository } from './user.repository';
 
 @Injectable()
@@ -16,7 +18,7 @@ export class UserService {
     }
   }
 
-  public async user_by_id(id: string): Promise<UserResponseDto> {
+  public async user_by_id(id: string): Promise<UserEntity> {
     try {
       return await this.userRepository.findOneBy({ id });
     } catch (e) {
