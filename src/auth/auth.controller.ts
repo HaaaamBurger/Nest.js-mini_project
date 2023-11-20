@@ -6,7 +6,7 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 
 import { UserRequestDto } from '../user/dto/request/user.request.dto';
 import { UserResponseDto } from '../user/dto/response/user.response.dto';
@@ -17,7 +17,6 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiResponse({ status: HttpStatus.CREATED, type: UserResponseDto })
   @Post('register')
   async register(
     @Body() body: UserRequestDto,

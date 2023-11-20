@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpException,
   HttpStatus,
   Param,
@@ -10,6 +11,8 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
+import { UserRequestDto } from './dto/request/user.request.dto';
+import { UserResponseDto } from './dto/response/user.response.dto';
 import { UserService } from './user.service';
 
 @ApiTags('User')
@@ -17,10 +20,28 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Get('/')
+  async getAllUsers(): Promise<UserResponseDto[]> {
+    try {
+      return await this.userService.all_users();
+    } catch (e) {
+      throw new HttpException(e.message, e.error);
+    }
+  }
+
+  @Get('/:id')
+  async getUserById(@Param('id') id: string): Promise<UserResponseDto> {
+    try {
+      return await this.userService.user_by_id(id);
+    } catch (e) {
+      throw new HttpException(e.message, e.error);
+    }
+  }
+
   @Put('update/:id')
   async updateUser(
-    @Body() body: any,
-    @Param() { id }: { id: string },
+    @Body() body: Partial<UserRequestDto>,
+    @Param('id') id: string,
     @Res() res: any,
   ): Promise<void> {
     try {
@@ -33,10 +54,7 @@ export class UserController {
   }
 
   @Delete('delete/:id')
-  async deleteUser(
-    @Param() { id }: { id: string },
-    @Res() res: any,
-  ): Promise<void> {
+  async deleteUser(@Param('id') id: string, @Res() res: any): Promise<void> {
     try {
       await this.userService.delete_user(id);
 
