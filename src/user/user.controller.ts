@@ -45,12 +45,11 @@ export class UserController {
   async updateUser(
     @Body() body: Partial<UserRequestDto>,
     @Param('id') id: string,
-    @Res() res: any,
-  ): Promise<void> {
+  ): Promise<UserCreateResponse> {
     try {
-      await this.userService.update_user(body, id);
+      const updatedUser = await this.userService.update_user(body, id);
 
-      res.status(HttpStatus.CREATED).json('User updated');
+      return UserResponseMapper.toDetailsDto(updatedUser);
     } catch (e) {
       throw new HttpException(e.message, e.error);
     }

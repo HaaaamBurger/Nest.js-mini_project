@@ -33,11 +33,12 @@ export class UserService {
   public async update_user(
     dto: Partial<UserRequestDto>,
     id: string,
-  ): Promise<void> {
+  ): Promise<UserEntity> {
     try {
-      await this.findUserByParamOrException(id, 'id');
+      const user = await this.findUserByParamOrException(id, 'id');
 
-      await this.userRepository.update(id, dto);
+      this.userRepository.merge(user, dto);
+      return await this.userRepository.save(user);
     } catch (e) {
       throw new HttpException(e.message, e.error);
     }
@@ -58,8 +59,6 @@ export class UserService {
     param: string,
   ): Promise<UserEntity> {
     const user = await this.userRepository.findOneBy({ [`${param}`]: userId });
-
-    console.log(user.id, userId);
 
     if (!user) {
       throw new UnprocessableEntityException('User not found');
