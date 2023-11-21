@@ -1,9 +1,13 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 
 import { UserEntity } from '../databasa/entities/user.entity';
 import { UserRequestDto } from './dto/request/user.request.dto';
 import { UserResponseDto } from './dto/response/user.response.dto';
-import { UserCreateResponse } from './dto/user.dto';
 import { UserRepository } from './user.repository';
 
 @Injectable()
@@ -20,7 +24,7 @@ export class UserService {
 
   public async user_by_id(id: string): Promise<UserEntity> {
     try {
-      return await this.userRepository.findOneBy({ id });
+      return await this.findUserByParamOrException(id, 'id');
     } catch (e) {
       throw new HttpException(e.message, e.error);
     }
@@ -31,12 +35,7 @@ export class UserService {
     id: string,
   ): Promise<void> {
     try {
-      const findUser = await this.userRepository.findOneBy({
-        email: dto.email,
-      });
-      if (!findUser) {
-        throw new HttpException('No such a user', HttpStatus.BAD_REQUEST);
-      }
+      await this.findUserByParamOrException(id, 'id');
 
       await this.userRepository.update(id, dto);
     } catch (e) {
@@ -46,14 +45,26 @@ export class UserService {
 
   public async delete_user(id: string): Promise<void> {
     try {
-      const findUser = await this.userRepository.findOneBy({ id });
-      if (!findUser) {
-        throw new HttpException('No such a user', HttpStatus.BAD_REQUEST);
-      }
+      await this.findUserByParamOrException(id, 'id');
 
       await this.userRepository.delete({ id });
     } catch (e) {
       throw new HttpException(e.message, e.error);
     }
+  }
+
+  private async findUserByParamOrException(
+    userId: string,
+    param: string,
+  ): Promise<UserEntity> {
+    const user = await this.userRepository.findOneBy({ [`${param}`]: userId });
+
+    console.log(user.id, userId);
+
+    if (!user) {
+      throw new UnprocessableEntityException('User not found');
+    }
+
+    return user;
   }
 }
