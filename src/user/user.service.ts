@@ -1,12 +1,11 @@
 import {
   HttpException,
-  HttpStatus,
   Injectable,
   UnprocessableEntityException,
 } from '@nestjs/common';
 
 import { UserEntity } from '../databasa/entities/user.entity';
-import { UserRequestDto } from './dto/request/user.request.dto';
+import { UserUpdateRequestDto } from './dto/request/user.update.request.dto';
 import { UserResponseDto } from './dto/response/user.response.dto';
 import { UserRepository } from './user.repository';
 
@@ -31,7 +30,7 @@ export class UserService {
   }
 
   public async update_user(
-    dto: Partial<UserRequestDto>,
+    dto: Partial<UserUpdateRequestDto>,
     id: string,
   ): Promise<UserEntity> {
     try {

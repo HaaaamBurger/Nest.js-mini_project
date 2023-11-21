@@ -1,8 +1,8 @@
 import { Body, Controller, HttpException, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import { UserRequestDto } from '../user/dto/request/user.request.dto';
-import { UserCreateResponse } from '../user/dto/user.dto';
+import { UserCreateRequestDto } from '../user/dto/request/user.create.request.dto';
+import { UserResponseDto } from '../user/dto/response/user.response.dto';
 import { UserResponseMapper } from '../user/user.response.mapper';
 import { AuthService } from './auth.service';
 
@@ -12,7 +12,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  async register(@Body() body: UserRequestDto): Promise<UserCreateResponse> {
+  async register(@Body() body: UserCreateRequestDto): Promise<UserResponseDto> {
     try {
       const registeredUser = await this.authService.register(body);
 

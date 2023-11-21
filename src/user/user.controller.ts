@@ -11,9 +11,8 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import { UserRequestDto } from './dto/request/user.request.dto';
+import { UserUpdateRequestDto } from './dto/request/user.update.request.dto';
 import { UserResponseDto } from './dto/response/user.response.dto';
-import { UserCreateResponse } from './dto/user.dto';
 import { UserResponseMapper } from './user.response.mapper';
 import { UserService } from './user.service';
 
@@ -32,7 +31,7 @@ export class UserController {
   }
 
   @Get('/:id')
-  async getUserById(@Param('id') id: string): Promise<UserCreateResponse> {
+  async getUserById(@Param('id') id: string): Promise<UserResponseDto> {
     try {
       const user = await this.userService.user_by_id(id);
       return UserResponseMapper.toDetailsDto(user);
@@ -43,9 +42,9 @@ export class UserController {
 
   @Put('update/:id')
   async updateUser(
-    @Body() body: Partial<UserRequestDto>,
+    @Body() body: Partial<UserUpdateRequestDto>,
     @Param('id') id: string,
-  ): Promise<UserCreateResponse> {
+  ): Promise<UserResponseDto> {
     try {
       const updatedUser = await this.userService.update_user(body, id);
 
