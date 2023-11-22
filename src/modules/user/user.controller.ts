@@ -3,15 +3,19 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpException,
   HttpStatus,
   Param,
   Put,
+  Query,
   Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { UserUpdateRequestDto } from './dto/request/user.update.request.dto';
+import { UserListQueryRequestDto } from './dto/request/user-list.query.request.dto';
+import { UserListResponseDto } from './dto/response/user.list.response.dto';
 import { UserResponseDto } from './dto/response/user.response.dto';
 import { UserResponseMapper } from './user.response.mapper';
 import { UserService } from './user.service';
@@ -22,9 +26,12 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('/')
-  async getAllUsers(): Promise<UserResponseDto[]> {
+  async getAllUsers(
+    @Query() query: UserListQueryRequestDto,
+  ): Promise<UserListResponseDto> {
     try {
-      return await this.userService.all_users();
+      const result = await this.userService.all_users(query);
+      return UserResponseMapper.toListDto(result, query);
     } catch (e) {
       throw new HttpException(e.message, e.error);
     }
@@ -42,7 +49,7 @@ export class UserController {
 
   @Put('update/:id')
   async updateUser(
-    @Body() body: Partial<UserUpdateRequestDto>,
+    @Body() body: UserUpdateRequestDto,
     @Param('id') id: string,
   ): Promise<UserResponseDto> {
     try {
@@ -54,6 +61,7 @@ export class UserController {
     }
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('delete/:id')
   async deleteUser(@Param('id') id: string, @Res() res: any): Promise<void> {
     try {

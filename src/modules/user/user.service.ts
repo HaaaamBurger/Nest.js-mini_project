@@ -4,18 +4,21 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 
-import { UserEntity } from '../databasa/entities/user.entity';
+import { IList } from '../../common/interfaces/list.interface';
+import { UserEntity } from '../../databasa/entities/user.entity';
 import { UserUpdateRequestDto } from './dto/request/user.update.request.dto';
-import { UserResponseDto } from './dto/response/user.response.dto';
+import { UserListQueryRequestDto } from './dto/request/user-list.query.request.dto';
 import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  public async all_users(): Promise<UserResponseDto[]> {
+  public async all_users(
+    query: UserListQueryRequestDto,
+  ): Promise<IList<UserEntity>> {
     try {
-      return await this.userRepository.find();
+      return await this.userRepository.getAllUsers(query);
     } catch (e) {
       throw new HttpException(e.message, e.error);
     }
@@ -30,7 +33,7 @@ export class UserService {
   }
 
   public async update_user(
-    dto: Partial<UserUpdateRequestDto>,
+    dto: UserUpdateRequestDto,
     id: string,
   ): Promise<UserEntity> {
     try {

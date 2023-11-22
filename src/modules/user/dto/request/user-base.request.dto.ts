@@ -11,15 +11,13 @@ export class UserBaseRequestDto {
   surname: string;
 
   @IsNumber()
+  @IsNotEmpty()
   age: number;
 
   @IsString()
   @IsNotEmpty()
   phone_number: string;
 
-  @Transform(({ value }) => {
-    value.trim().toLowerCase();
-  })
   @IsString()
   @IsEmail()
   @IsNotEmpty()
