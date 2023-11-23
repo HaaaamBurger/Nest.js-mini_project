@@ -1,4 +1,11 @@
-import { Body, Controller, HttpException, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpException,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 
 import { UserCreateRequestDto } from '../user/dto/request/user.create.request.dto';
@@ -12,7 +19,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  async register(@Body() body: UserCreateRequestDto): Promise<UserResponseDto> {
+  public async register(
+    @Body() body: UserCreateRequestDto,
+  ): Promise<UserResponseDto> {
     try {
       const registeredUser = await this.authService.register(body);
 
@@ -21,4 +30,8 @@ export class AuthController {
       throw new HttpException(e.message, e.error);
     }
   }
+
+  @UseGuards(AuthGuard())
+  @Post('login')
+  public async login() {}
 }

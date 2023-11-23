@@ -9,6 +9,4 @@ export default registerAs(token, () => ({
   username: configService.get<string>('POSTGRES_USERNAME'),
   password: configService.get<string>('POSTGRES_PASSWORD'),
   database: configService.get<string>('POSTGRES_DB'),
-  jwt_secret: configService.get<string>('JWT_SECRET'),
-  jwt_expires_in: configService.get<string>('JWT_EXPIRES_IN'),
 }));

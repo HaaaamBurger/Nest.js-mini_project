@@ -1,39 +1,19 @@
 import {
   HttpException,
   HttpStatus,
-  Inject,
   Injectable,
-  UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { AuthGuard } from '@nestjs/passport';
 
-import { UserEntity } from '../../databasa/entities/user.entity';
 import { UserCreateRequestDto } from '../user/dto/request/user.create.request.dto';
 import { UserResponseDto } from '../user/dto/response/user.response.dto';
 import { AuthRepository } from './auth.repository';
+import { AuthLoginRequestDto } from './dto/request/auth.login.request.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly authRepository: AuthRepository,
-    @InjectRepository(UserEntity)
-    public readonly userRepository: Repository<UserEntity>,
-    private readonly jwtService: JwtService,
-  ) {}
-
-  public async validateUser(data): Promise<UserEntity> {
-    const user = await this.userRepository.findOneBy({ id: data.id });
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-    return user;
-  }
-
-  public async logIn(data) {
-    return;
-  }
+  constructor(private readonly authRepository: AuthRepository) {}
 
   public async register(dto: UserCreateRequestDto): Promise<UserResponseDto> {
     try {
@@ -50,6 +30,15 @@ export class AuthService {
       return registered_user;
     } catch (e) {
       throw new HttpException(e.message, e.error);
+    }
+  }
+
+  @UseGuards(AuthGuard('bearer'))
+  public async login(data: AuthLoginRequestDto) {
+    const findUser = await this.authRepository.findOneBy({ email: data.email });
+
+    if (!findUser) {
+      throw new HttpException('Wrong credentials', HttpStatus.UNAUTHORIZED);
     }
   }
 }

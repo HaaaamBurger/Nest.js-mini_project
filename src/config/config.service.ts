@@ -29,11 +29,4 @@ export class CustomConfigService {
   get database(): string {
     return this.configs.database;
   }
-
-  get jwt_secret(): string {
-    return this.configs.jwt_secret;
-  }
-  get jwt_expires_in(): string {
-    return this.configs.jwt_expires_in;
-  }
 }

@@ -4,7 +4,6 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from '@webeleon/nestjs-redis';
 
-import { CustomConfigService } from '../../config/config.service';
 import { UserEntity } from '../../databasa/entities/user.entity';
 import { AuthController } from './auth.controller';
 import { AuthRepository } from './auth.repository';
@@ -22,10 +21,10 @@ import { BearerStrategy } from './bearer.strategy';
       url: 'redis://localhost:6379',
     }),
     JwtModule.registerAsync({
-      useFactory: async (customConfigService: CustomConfigService) => ({
-        secret: customConfigService.jwt_secret,
+      useFactory: async () => ({
+        secret: 'secret',
         signOptions: {
-          expiresIn: customConfigService.jwt_expires_in,
+          expiresIn: '24h',
         },
       }),
     }),

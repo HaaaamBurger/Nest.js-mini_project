@@ -5,14 +5,14 @@ import { InjectRedisClient, RedisClient } from '@webeleon/nestjs-redis';
 import { Strategy } from 'passport-http-bearer';
 
 import { UserEntity } from '../../databasa/entities/user.entity';
-import { AuthService } from './auth.service';
+import { AuthRepository } from './auth.repository';
 
 @Injectable()
 export class BearerStrategy extends PassportStrategy(Strategy, 'bearer') {
   private logger = new Logger();
   constructor(
     private readonly jwtService: JwtService,
-    private readonly authService: AuthService,
+    private readonly authRepository: AuthRepository,
     @InjectRedisClient() readonly redisClient: RedisClient,
   ) {
     super();
@@ -28,7 +28,7 @@ export class BearerStrategy extends PassportStrategy(Strategy, 'bearer') {
 
       await this.jwtService.verifyAsync(token);
       const decodeToken = this.jwtService.decode(token);
-      user = await this.authService.validateUser(decodeToken);
+      user = await this.authRepository.validateUser(decodeToken);
     } catch (e) {
       this.logger.log(e);
       throw new UnauthorizedException();
