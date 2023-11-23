@@ -19,7 +19,7 @@ export class BearerStrategy extends PassportStrategy(Strategy, 'bearer') {
   }
 
   async validate(token: string): Promise<UserEntity> {
-    const user = null;
+    let user = null;
 
     try {
       if (!(await this.redisClient.exists(token))) {
@@ -28,7 +28,7 @@ export class BearerStrategy extends PassportStrategy(Strategy, 'bearer') {
 
       await this.jwtService.verifyAsync(token);
       const decodeToken = this.jwtService.decode(token);
-      // user = await this.authService.validateUser(decodeToken);
+      user = await this.authService.validateUser(decodeToken);
     } catch (e) {
       this.logger.log(e);
       throw new UnauthorizedException();
