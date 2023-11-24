@@ -31,7 +31,7 @@ export class AuthController {
     }
   }
 
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('bearer'))
   @Post('login')
   public async login() {}
 }

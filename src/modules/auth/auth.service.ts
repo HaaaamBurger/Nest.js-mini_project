@@ -33,7 +33,7 @@ export class AuthService {
     }
   }
 
-  @UseGuards(AuthGuard('bearer'))
+  @UseGuards(AuthGuard())
   public async login(data: AuthLoginRequestDto) {
     const findUser = await this.authRepository.findOneBy({ email: data.email });
 

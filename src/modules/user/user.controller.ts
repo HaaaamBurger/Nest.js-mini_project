@@ -10,7 +10,9 @@ import {
   Put,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 
 import { UserUpdateRequestDto } from './dto/request/user.update.request.dto';
@@ -21,6 +23,7 @@ import { UserResponseMapper } from './user.response.mapper';
 import { UserService } from './user.service';
 
 @ApiTags('User')
+@UseGuards(AuthGuard('bearer'))
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}

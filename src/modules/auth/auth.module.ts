@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RedisModule } from '@webeleon/nestjs-redis';
+import { InjectRedisClient, RedisModule } from '@webeleon/nestjs-redis';
 
 import { UserEntity } from '../../databasa/entities/user.entity';
 import { AuthController } from './auth.controller';
@@ -31,6 +31,6 @@ import { BearerStrategy } from './bearer.strategy';
   ],
   controllers: [AuthController],
   providers: [AuthService, AuthRepository, BearerStrategy],
-  exports: [PassportModule, AuthModule],
+  exports: [AuthRepository],
 })
 export class AuthModule {}
