@@ -13,7 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { UserUpdateRequestDto } from './dto/request/user.update.request.dto';
 import { UserListQueryRequestDto } from './dto/request/user-list.query.request.dto';
@@ -23,6 +23,7 @@ import { UserResponseMapper } from './user.response.mapper';
 import { UserService } from './user.service';
 
 @ApiTags('User')
+@ApiBearerAuth()
 @UseGuards(AuthGuard('bearer'))
 @Controller('users')
 export class UserController {
