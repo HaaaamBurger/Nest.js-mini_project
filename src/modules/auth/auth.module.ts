@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { InjectRedisClient, RedisModule } from '@webeleon/nestjs-redis';
+import { RedisModule } from '@webeleon/nestjs-redis';
 
 import { UserEntity } from '../../databasa/entities/user.entity';
 import { AuthController } from './auth.controller';

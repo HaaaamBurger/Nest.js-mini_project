@@ -5,6 +5,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { InjectRedisClient, RedisClient } from '@webeleon/nestjs-redis';
 
 import { UserCreateRequestDto } from '../user/dto/request/user.create.request.dto';
 import { UserResponseDto } from '../user/dto/response/user.response.dto';
@@ -13,7 +14,10 @@ import { AuthLoginRequestDto } from './dto/request/auth.login.request.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly authRepository: AuthRepository) {}
+  constructor(
+    private readonly authRepository: AuthRepository,
+    @InjectRedisClient() private redisClient: RedisClient,
+  ) {}
 
   public async register(dto: UserCreateRequestDto): Promise<UserResponseDto> {
     try {
@@ -33,12 +37,19 @@ export class AuthService {
     }
   }
 
-  @UseGuards(AuthGuard())
-  public async login(data: AuthLoginRequestDto) {
+  public async login(data: AuthLoginRequestDto): Promise<string> {
     const findUser = await this.authRepository.findOneBy({ email: data.email });
 
     if (!findUser) {
       throw new HttpException('Wrong credentials', HttpStatus.UNAUTHORIZED);
     }
+
+    const token = await this.authRepository.signIn({
+      id: findUser.id,
+    });
+
+    await this.redisClient.setEx(token, 10000, token);
+
+    return token;
   }
 }
