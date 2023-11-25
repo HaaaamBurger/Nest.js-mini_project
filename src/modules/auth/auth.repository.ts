@@ -31,9 +31,9 @@ export class AuthRepository extends Repository<UserEntity> {
     return this.jwtService.sign(data);
   }
 
-  public async decode(token: string) {
+  public async decode(token: string): Promise<string> {
     try {
-      return this.jwtService.decode(token);
+      return await this.jwtService.decode(token);
     } catch (e) {}
   }
 
