@@ -29,4 +29,8 @@ export class CustomConfigService {
   get database(): string {
     return this.configs.database;
   }
+
+  get bcrypt_salt(): string {
+    return this.configs.bcrypt_salt;
+  }
 }

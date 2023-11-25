@@ -9,4 +9,5 @@ export default registerAs(token, () => ({
   username: configService.get<string>('POSTGRES_USERNAME'),
   password: configService.get<string>('POSTGRES_PASSWORD'),
   database: configService.get<string>('POSTGRES_DB'),
+  bcrypt_salt: configService.get<string>('BCRYPT_SALT'),
 }));

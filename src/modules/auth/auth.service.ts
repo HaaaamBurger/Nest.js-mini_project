@@ -1,10 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  UseGuards,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRedisClient, RedisClient } from '@webeleon/nestjs-redis';
 
 import { UserCreateRequestDto } from '../user/dto/request/user.create.request.dto';
@@ -21,6 +15,8 @@ export class AuthService {
 
   public async register(dto: UserCreateRequestDto): Promise<UserResponseDto> {
     try {
+      const hashedPassword = await this.authRepository.hash(dto.password);
+
       const findUser = await this.authRepository.findOneBy({
         email: dto.email,
       });
@@ -28,7 +24,10 @@ export class AuthService {
         throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
       }
 
-      const registered_user = this.authRepository.create(dto);
+      const registered_user = this.authRepository.create({
+        ...dto,
+        password: hashedPassword,
+      });
       await this.authRepository.save(registered_user);
 
       return registered_user;
@@ -41,6 +40,15 @@ export class AuthService {
     const findUser = await this.authRepository.findOneBy({ email: data.email });
 
     if (!findUser) {
+      throw new HttpException('Wrong credentials', HttpStatus.UNAUTHORIZED);
+    }
+
+    const isMatched = await this.authRepository.compare(
+      data.password,
+      findUser.password,
+    );
+
+    if (!isMatched) {
       throw new HttpException('Wrong credentials', HttpStatus.UNAUTHORIZED);
     }
 

@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from '@webeleon/nestjs-redis';
 
+import { CustomConfigModule } from '../../config/config.module';
 import { UserEntity } from '../../database/entities/user.entity';
 import { AuthController } from './auth.controller';
 import { AuthRepository } from './auth.repository';
@@ -12,6 +13,7 @@ import { BearerStrategy } from './bearer.strategy';
 
 @Module({
   imports: [
+    CustomConfigModule,
     TypeOrmModule.forFeature([UserEntity]),
     PassportModule.register({
       defaultStrategy: 'bearer',

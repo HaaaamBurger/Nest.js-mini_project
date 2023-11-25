@@ -35,4 +35,12 @@ export class AuthController {
       throw new HttpException(e.message, e.error);
     }
   }
+
+  // @Post('logout')
+  // public async logout(): Promise<void> {
+  //   try {
+  //   } catch (e) {
+  //     throw new HttpException(e.message, e.error);
+  //   }
+  // }
 }
