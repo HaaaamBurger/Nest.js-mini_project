@@ -1,5 +1,5 @@
 import { IList } from '../../common/interfaces/list.interface';
-import { UserEntity } from '../../databasa/entities/user.entity';
+import { UserEntity } from '../../database/entities/user.entity';
 import { UserListQueryRequestDto } from './dto/request/user-list.query.request.dto';
 import {
   UserListItemResponseDto,

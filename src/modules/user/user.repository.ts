@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 
 import { IList } from '../../common/interfaces/list.interface';
-import { UserEntity } from '../../databasa/entities/user.entity';
+import { UserEntity } from '../../database/entities/user.entity';
 import { UserListQueryRequestDto } from './dto/request/user-list.query.request.dto';
 import { EUserListOrderField } from './enum/user-list-order-field_enum';
 

@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CustomConfigModule } from './config/config.module';
 import { CustomConfigService } from './config/config.service';
-import { UserEntity } from './databasa/entities/user.entity';
+import { UserEntity } from './database/entities/user.entity';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 
@@ -22,7 +22,8 @@ import { UserModule } from './modules/user/user.module';
           password: customConfigService.password,
           entities: [UserEntity],
           database: customConfigService.database,
-          synchronize: true,
+          synchronize: false,
+          migrationsRun: false,
         };
       },
       inject: [CustomConfigService],

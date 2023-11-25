@@ -4,7 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from '@webeleon/nestjs-redis';
 
-import { UserEntity } from '../../databasa/entities/user.entity';
+import { UserEntity } from '../../database/entities/user.entity';
 import { AuthController } from './auth.controller';
 import { AuthRepository } from './auth.repository';
 import { AuthService } from './auth.service';

@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
-import { UserEntity } from '../../databasa/entities/user.entity';
+import { UserEntity } from '../../database/entities/user.entity';
 
 @Injectable()
 export class AuthRepository extends Repository<UserEntity> {

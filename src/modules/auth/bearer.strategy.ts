@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { InjectRedisClient, RedisClient } from '@webeleon/nestjs-redis';
 import { Strategy } from 'passport-http-bearer';
 
-import { UserEntity } from '../../databasa/entities/user.entity';
+import { UserEntity } from '../../database/entities/user.entity';
 import { AuthRepository } from './auth.repository';
 
 @Injectable()

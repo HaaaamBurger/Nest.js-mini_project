@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 
 import { IList } from '../../common/interfaces/list.interface';
-import { UserEntity } from '../../databasa/entities/user.entity';
+import { UserEntity } from '../../database/entities/user.entity';
 import { UserUpdateRequestDto } from './dto/request/user.update.request.dto';
 import { UserListQueryRequestDto } from './dto/request/user-list.query.request.dto';
 import { UserRepository } from './user.repository';
