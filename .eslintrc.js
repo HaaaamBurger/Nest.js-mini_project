@@ -30,7 +30,6 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-var-requires': 'off',
-    "eslint-disable-next-line": 'disable',
     "simple-import-sort/imports": "error",
     "import/first": "error",
     "import/newline-after-import": ["error", { "count": 1 }],
