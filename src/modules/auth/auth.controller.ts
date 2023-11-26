@@ -5,6 +5,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 
 import { ITokenPair } from '../../common/interfaces/token.interface';
@@ -53,4 +54,8 @@ export class AuthController {
       throw new HttpException(e.message, e.error);
     }
   }
+
+  @UseGuards(AuthGuard('bearer'))
+  @Post('refresh')
+  public async refresh() {}
 }

@@ -1,10 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRedisClient, RedisClient } from '@webeleon/nestjs-redis';
 
-import {
-  ITokenPair,
-  ITokenPayload,
-} from '../../common/interfaces/token.interface';
+import { ITokenPair } from '../../common/interfaces/token.interface';
 import { UserCreateRequestDto } from '../user/dto/request/user.create.request.dto';
 import { UserResponseDto } from '../user/dto/response/user.response.dto';
 import { AuthRepository } from './auth.repository';
@@ -61,7 +58,10 @@ export class AuthService {
       email: data.email,
     });
 
-    await this.redisClient.setEx(token.accessToken, 10000, token.accessToken);
+    await Promise.all([
+      this.redisClient.setEx(token.accessToken, 10000, token.accessToken),
+      // this.redisClient.setEx(token.refreshToken, 10000, token.refreshToken),
+    ]);
 
     return token;
   }

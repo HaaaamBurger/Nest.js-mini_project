@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { DataSource, Repository } from 'typeorm';
 
+import { ESecretType } from '../../common/enums/token_enums/secret_type_enum';
 import {
   ITokenPair,
   ITokenPayload,
