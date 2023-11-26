@@ -4,6 +4,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { DataSource, Repository } from 'typeorm';
 
+import {
+  ITokenPair,
+  ITokenPayload,
+} from '../../common/interfaces/token.interface';
 import { CustomConfigService } from '../../config/config.service';
 import { UserEntity } from '../../database/entities/user.entity';
 
@@ -19,16 +23,29 @@ export class AuthRepository extends Repository<UserEntity> {
     super(UserEntity, dataSource.manager);
   }
 
-  public async validateUser(data): Promise<UserEntity> {
-    const user = await this.userRepository.findOneBy({ id: data.id });
+  public async validateUser(data: ITokenPayload): Promise<UserEntity> {
+    const user = await this.userRepository.findOneBy({ id: data._userId });
     if (!user) {
       throw new UnauthorizedException();
     }
     return user;
   }
 
-  public async signIn(data): Promise<string> {
-    return this.jwtService.sign(data);
+  public async signIn(payload: ITokenPayload): Promise<ITokenPair> {
+    const accessToken = this.jwtService.sign(payload, {
+      secret: this.customConfigService.jwt_access_secret,
+      expiresIn: '1m',
+    });
+
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: this.customConfigService.jwt_refresh_secret,
+      expiresIn: '2m',
+    });
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   public async decode(token: string): Promise<string> {

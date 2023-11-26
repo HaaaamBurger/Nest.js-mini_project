@@ -1,6 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRedisClient, RedisClient } from '@webeleon/nestjs-redis';
 
+import {
+  ITokenPair,
+  ITokenPayload,
+} from '../../common/interfaces/token.interface';
 import { UserCreateRequestDto } from '../user/dto/request/user.create.request.dto';
 import { UserResponseDto } from '../user/dto/response/user.response.dto';
 import { AuthRepository } from './auth.repository';
@@ -36,7 +40,7 @@ export class AuthService {
     }
   }
 
-  public async login(data: AuthLoginRequestDto): Promise<string> {
+  public async login(data: AuthLoginRequestDto): Promise<ITokenPair> {
     const findUser = await this.authRepository.findOneBy({ email: data.email });
 
     if (!findUser) {
@@ -53,10 +57,11 @@ export class AuthService {
     }
 
     const token = await this.authRepository.signIn({
-      id: findUser.id,
+      _userId: findUser.id,
+      email: data.email,
     });
 
-    await this.redisClient.setEx(token, 10000, token);
+    await this.redisClient.setEx(token.accessToken, 10000, token.accessToken);
 
     return token;
   }

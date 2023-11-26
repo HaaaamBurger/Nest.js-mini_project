@@ -10,4 +10,6 @@ export default registerAs(token, () => ({
   password: configService.get<string>('POSTGRES_PASSWORD'),
   database: configService.get<string>('POSTGRES_DB'),
   bcrypt_salt: configService.get<string>('BCRYPT_SALT'),
+  jwt_access_secret: configService.get<string>('JWT_ACCESS_SECRET'),
+  jwt_refresh_secret: configService.get<string>('JWT_REFRESH_SECRET'),
 }));

@@ -33,4 +33,12 @@ export class CustomConfigService {
   get bcrypt_salt(): string {
     return this.configs.bcrypt_salt;
   }
+
+  get jwt_access_secret(): string {
+    return this.configs.jwt_access_secret;
+  }
+
+  get jwt_refresh_secret(): string {
+    return this.configs.jwt_refresh_secret;
+  }
 }

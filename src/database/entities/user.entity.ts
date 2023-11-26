@@ -4,7 +4,7 @@ import { CreatedUpdatedModel } from './common/created-updated.model';
 
 @Entity('user')
 export class UserEntity extends CreatedUpdatedModel {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('increment')
   id: string;
 
   @Column({
