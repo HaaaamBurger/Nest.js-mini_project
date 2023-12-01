@@ -38,31 +38,52 @@ export class AuthService {
   }
 
   public async login(data: AuthLoginRequestDto): Promise<ITokenPair> {
-    const findUser = await this.authRepository.findOneBy({ email: data.email });
+    try {
+      const findUser = await this.authRepository.findOneBy({
+        email: data.email,
+      });
 
-    if (!findUser) {
-      throw new HttpException('Wrong credentials', HttpStatus.UNAUTHORIZED);
+      if (!findUser) {
+        throw new HttpException('Wrong credentials', HttpStatus.UNAUTHORIZED);
+      }
+
+      const isMatched = await this.authRepository.compare(
+        data.password,
+        findUser.password,
+      );
+
+      if (!isMatched) {
+        throw new HttpException('Wrong credentials', HttpStatus.UNAUTHORIZED);
+      }
+
+      const token = await this.authRepository.signIn({
+        _userId: findUser.id,
+        email: data.email,
+      });
+
+      await Promise.all([
+        await this.redisClient.setEx(
+          token.accessToken,
+          10000,
+          token.accessToken,
+        ),
+        await this.redisClient.setEx(
+          token.refreshToken,
+          20000,
+          token.refreshToken,
+        ),
+      ]);
+
+      return token;
+    } catch (e) {
+      throw new HttpException(e.message, e.error);
     }
+  }
 
-    const isMatched = await this.authRepository.compare(
-      data.password,
-      findUser.password,
-    );
-
-    if (!isMatched) {
-      throw new HttpException('Wrong credentials', HttpStatus.UNAUTHORIZED);
+  public async refresh() {
+    try {
+    } catch (e) {
+      throw new HttpException(e.message, e.error);
     }
-
-    const token = await this.authRepository.signIn({
-      _userId: findUser.id,
-      email: data.email,
-    });
-
-    await Promise.all([
-      this.redisClient.setEx(token.accessToken, 10000, token.accessToken),
-      // this.redisClient.setEx(token.refreshToken, 10000, token.refreshToken),
-    ]);
-
-    return token;
   }
 }

@@ -1,6 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { InjectRedisClient, RedisClient } from '@webeleon/nestjs-redis';
 
+import { ITokenPair } from '../common/interfaces/token.interface';
+
 @Injectable()
 export class LogoutGuard implements CanActivate {
   constructor(@InjectRedisClient() private redisClient: RedisClient) {}
@@ -8,15 +10,18 @@ export class LogoutGuard implements CanActivate {
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
 
-    if (request.headers?.authorization) {
-      const token = request.headers.authorization.accessToken.split(' ');
+    if (request.headers.authorization) {
+      const [accessToken, refreshToken] =
+        request.headers.authorization.split(',');
 
-      if (token[0] == 'Bearer' && token[1] != '') {
-        const jwtToken = token[1];
-        if (!(await this.redisClient.exists(jwtToken))) {
+      if (accessToken[1] != '') {
+        if (!(await this.redisClient.exists(accessToken[1]))) {
           return false;
         } else {
-          await this.redisClient.del(jwtToken);
+          await Promise.all([
+            this.redisClient.del(accessToken[1]),
+            this.redisClient.del(refreshToken[1]),
+          ]);
           return true;
         }
       }

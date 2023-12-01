@@ -57,5 +57,10 @@ export class AuthController {
 
   @UseGuards(AuthGuard('bearer'))
   @Post('refresh')
-  public async refresh() {}
+  public async refresh() {
+    try {
+    } catch (e) {
+      throw new HttpException(e.message, e.error);
+    }
+  }
 }
